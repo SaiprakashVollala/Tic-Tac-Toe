@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f2e4c7;
+            font-family: Arial, sans-serif;
+        }
+
+
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(3, 150px);
+            grid-template-rows: repeat(3, 150px);
+            gap: 10px;
+            background-color: #c29a6a;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            background-color: #8b5e3c;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #f7f3e8;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+
+        .cell:hover {
+            background-color: #9f704d;
+            transform: scale(1.05);
+        }
+
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .message button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #c29a6a;
+            color: #f7f3e8;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .message button:hover {
+            background-color: #8b5e3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container" id="gameBoard">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+    <div class="message" id="messageBox">
+        <span id="messageText"></span>
+        <button onclick="resetGame()">Play Again</button>
+    </div>
+
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        let currentPlayer = 'X';
+        let board = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+
+        const winningCombinations = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+
+        function handleCellClick(e) {
+            const cellIndex = e.target.getAttribute('data-index');
+
+            if (board[cellIndex] !== '' || !gameActive) return;
+
+            board[cellIndex] = currentPlayer;
+            e.target.textContent = currentPlayer;
+
+            if (checkWin()) {
+                messageText.textContent = `Player ${currentPlayer} Wins! 🎉`;
+                gameActive = false;
+            } else if (board.every(cell => cell !== '')) {
+                messageText.textContent = 'It\'s a Tie! 😲';
+                gameActive = false;
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            }
+        }
+
+        function checkWin() {
+            return winningCombinations.some(combination => {
+                return combination.every(index => board[index] === currentPlayer);
+            });
+        }
+
+        function resetGame() {
+            board = ['', '', '', '', '', '', '', '', ''];
+            cells.forEach(cell => (cell.textContent = ''));
+            currentPlayer = 'X';
+            gameActive = true;
+            messageText.textContent = '';
+        }
+    </script>
+</body>
+</html>
